@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>论文搜索引擎</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="static/css/style.css" rel="stylesheet">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-search me-2"></i>
+                论文搜索引擎
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#search">搜索</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#qa">智能问答</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">关于</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要内容 -->
+    <main>
+        <!-- 搜索区域 -->
+        <section id="search" class="py-5 bg-light">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="text-center mb-5">
+                            <h1 class="display-4 fw-bold text-primary">智能论文搜索</h1>
+                            <p class="lead text-muted">基于RAG技术的学术论文搜索引擎</p>
+                        </div>
+                        
+                        <!-- 搜索表单 -->
+                        <div class="card shadow-lg border-0">
+                            <div class="card-body p-4">
+                                <form id="searchForm" class="mb-4">
+                                    <div class="input-group input-group-lg">
+                                        <input type="text" id="searchQuery" class="form-control" 
+                                               placeholder="输入关键词搜索论文..." required>
+                                        <button class="btn btn-primary" type="submit">
+                                            <i class="fas fa-search me-2"></i>搜索
+                                        </button>
+                                    </div>
+                                </form>
+                                
+                                <!-- 高级搜索选项 -->
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <label class="form-label">分类</label>
+                                        <select id="categoryFilter" class="form-select">
+                                            <option value="">所有分类</option>
+                                            <option value="cs.AI">人工智能</option>
+                                            <option value="cs.CV">计算机视觉</option>
+                                            <option value="cs.CL">计算语言学</option>
+                                            <option value="cs.LG">机器学习</option>
+                                            <option value="cs.IR">信息检索</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">起始年份</label>
+                                        <input type="number" id="yearFrom" class="form-control" 
+                                               placeholder="2020" min="1990" max="2024">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">结束年份</label>
+                                        <input type="number" id="yearTo" class="form-control" 
+                                               placeholder="2024" min="1990" max="2024">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 搜索结果 -->
+        <section id="searchResults" class="py-5" style="display: none;">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h3>搜索结果</h3>
+                            <div class="text-muted">
+                                <span id="resultCount">0</span> 篇论文
+                                <span class="ms-3">耗时: <span id="searchTime">0</span>ms</span>
+                            </div>
+                        </div>
+                        
+                        <!-- 结果列表 -->
+                        <div id="resultsList" class="row">
+                            <!-- 搜索结果将在这里动态加载 -->
+                        </div>
+                        
+                        <!-- 分页 -->
+                        <nav aria-label="搜索结果分页" class="mt-4">
+                            <ul id="pagination" class="pagination justify-content-center">
+                                <!-- 分页按钮将在这里动态生成 -->
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 智能问答区域 -->
+        <section id="qa" class="py-5 bg-light">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="text-center mb-5">
+                            <h2 class="fw-bold text-primary">智能问答</h2>
+                            <p class="text-muted">基于RAG技术的智能问答系统</p>
+                        </div>
+                        
+                        <div class="card shadow-lg border-0">
+                            <div class="card-body p-4">
+                                <div id="chatContainer" class="mb-4" style="height: 400px; overflow-y: auto;">
+                                    <div class="text-center text-muted">
+                                        <i class="fas fa-robot fa-3x mb-3"></i>
+                                        <p>开始提问，我将为您提供智能回答</p>
+                                    </div>
+                                </div>
+                                
+                                <form id="qaForm">
+                                    <div class="input-group">
+                                        <input type="text" id="questionInput" class="form-control" 
+                                               placeholder="输入您的问题..." required>
+                                        <button class="btn btn-primary" type="submit">
+                                            <i class="fas fa-paper-plane me-2"></i>发送
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 关于区域 -->
+        <section id="about" class="py-5">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 mx-auto text-center">
+                        <h2 class="fw-bold text-primary mb-4">关于我们</h2>
+                        <p class="lead text-muted mb-4">
+                            基于RAG（检索增强生成）技术的智能论文搜索引擎，
+                            支持ArXiv论文库检索、智能问答和论文下载功能。
+                        </p>
+                        <div class="row g-4">
+                            <div class="col-md-4">
+                                <div class="text-center">
+                                    <i class="fas fa-search fa-3x text-primary mb-3"></i>
+                                    <h5>智能搜索</h5>
+                                    <p class="text-muted">基于语义理解的智能搜索</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-center">
+                                    <i class="fas fa-robot fa-3x text-primary mb-3"></i>
+                                    <h5>智能问答</h5>
+                                    <p class="text-muted">基于RAG技术的智能问答系统</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-center">
+                                    <i class="fas fa-download fa-3x text-primary mb-3"></i>
+                                    <h5>论文下载</h5>
+                                    <p class="text-muted">支持多种格式的论文下载</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark text-light py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>论文搜索引擎</h5>
+                    <p class="text-muted">基于RAG技术的智能学术搜索平台</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="text-muted">&copy; 2024 论文搜索引擎. 保留所有权利.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 加载提示 -->
+    <div id="loadingModal" class="modal fade" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body text-center py-4">
+                    <div class="spinner-border text-primary mb-3" role="status">
+                        <span class="visually-hidden">加载中...</span>
+                    </div>
+                    <p class="mb-0">正在搜索论文，请稍候...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dify AI助手配置 -->
+    <script>
+        window.difyChatbotConfig = {
+            token: 'lyRLrElEpJPKlfCV',
+            baseUrl: 'https://dify.aipfuture.com',
+            inputs: {
+                // 可以在这里定义来自开始节点的输入
+                // key是变量名
+                // 例如：
+                // name: "NAME"
+            },
+            systemVariables: {
+                // user_id: '您可以在这里定义用户ID',
+                // conversation_id: '您可以在这里定义对话ID，必须是有效的UUID',
+            },
+            userVariables: {
+                // avatar_url: '您可以在这里定义用户头像URL',
+                // name: '您可以在这里定义用户名',
+            }
+        }
+    </script>
+    <script
+        src="https://dify.aipfuture.com/embed.min.js"
+        id="lyRLrElEpJPKlfCV"
+        defer>
+    </script>
+    <style>
+        #dify-chatbot-bubble-button {
+            background-color: #1C64F2 !important;
+        }
+        #dify-chatbot-bubble-window {
+            width: 24rem !important;
+            height: 40rem !important;
+        }
+        
+        /* 确保Dify聊天机器人不影响现有布局 */
+        #dify-chatbot-bubble-button {
+            z-index: 9999 !important;
+        }
+        #dify-chatbot-bubble-window {
+            z-index: 9998 !important;
+        }
+    </style>
+
+    <!-- JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+           <script>
+               window.addEventListener('DOMContentLoaded', () => {
+                   // 动态设置后端API基础地址（用于Netlify部署）
+                   const isLocal = location.hostname.includes('localhost') || location.hostname.includes('127.0.0.1');
+                   try {
+                       if (window.PaperSearchApp) {
+                           window.PaperSearchApp.prototype.apiBaseUrl = isLocal ? 'http://localhost:8000/api' : '/api';
+                       }
+                   } catch (e) {}
+               });
+           </script>
+           <script src="static/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,3 @@
+# Replace the domain with your deployed backend URL
+/api/* https://your-backend.example.com/api/:splat 200
+
