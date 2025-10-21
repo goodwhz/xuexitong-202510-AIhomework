@@ -2,6 +2,7 @@
 fastapi==0.104.1
 uvicorn==0.24.0
 python-multipart==0.0.6
+mangum==0.17.0
 
 # LangChain相关（与0.3生态兼容的拆分包）
 langchain-core==0.3.4
