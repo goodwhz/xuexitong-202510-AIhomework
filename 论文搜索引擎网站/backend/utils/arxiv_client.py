@@ -10,14 +10,17 @@ from typing import List, Dict, Optional, Any
 from datetime import datetime
 import xml.etree.ElementTree as ET
 
+from .config import config
+
 logger = logging.getLogger(__name__)
 
 class ArxivClient:
     """ArXiv API客户端"""
     
     def __init__(self):
-        self.base_url = "http://export.arxiv.org/api/query"
+        self.base_url = config.ARXIV_API_BASE_URL
         self.session = None
+        self.timeout = aiohttp.ClientTimeout(total=config.ARXIV_REQUEST_TIMEOUT)
     
     async def __aenter__(self):
         """异步上下文管理器入口"""

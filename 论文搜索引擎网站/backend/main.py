@@ -13,6 +13,7 @@ from dotenv import load_dotenv
 from api.search import router as search_router
 from api.paper import router as paper_router
 from api.qa import router as qa_router
+from api.knowledge_base import router as knowledge_base_router
 from utils.logger import setup_logger
 
 # 加载环境变量
@@ -43,6 +44,7 @@ logger = setup_logger()
 app.include_router(search_router, prefix="/api/search", tags=["搜索"])
 app.include_router(paper_router, prefix="/api/paper", tags=["论文"])
 app.include_router(qa_router, prefix="/api/qa", tags=["问答"])
+app.include_router(knowledge_base_router, prefix="/api/knowledge-base", tags=["知识库"])
 
 @app.get("/")
 async def root():
