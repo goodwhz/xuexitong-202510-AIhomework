@@ -78,30 +78,41 @@ body {
 /* 论文卡片样式 */
 .paper-card {
     border: none;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-    margin-bottom: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.4s ease;
+    margin-bottom: 25px;
+    border-left: 4px solid #0d6efd;
+    background: linear-gradient(145deg, #ffffff, #f8f9fa);
 }
 
 .paper-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    border-left-color: #0a58ca;
 }
 
 .paper-title {
-    color: var(--primary-color);
-    font-weight: 600;
-    font-size: 1.1rem;
+    color: #1a365d;
+    font-weight: 700;
+    font-size: 1.2rem;
     line-height: 1.4;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
     text-decoration: none;
-    transition: color 0.3s ease;
+    transition: all 0.3s ease;
+    display: block;
+    background: linear-gradient(135deg, #1a365d 0%, #2d3748 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .paper-title:hover {
-    color: #0a58ca;
-    text-decoration: underline;
+    background: linear-gradient(135deg, #0a58ca 0%, #1e40af 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    transform: translateX(5px);
 }
 
 .paper-authors {

@@ -3,18 +3,12 @@
 基于FastAPI构建的RESTful API服务
 """
 
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import uvicorn
 import os
 from dotenv import load_dotenv
-
-from api.search import router as search_router
-from api.paper import router as paper_router
-from api.qa import router as qa_router
-from api.knowledge_base import router as knowledge_base_router
-from utils.logger import setup_logger
 
 # 加载环境变量
 load_dotenv()
@@ -37,15 +31,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 设置日志
-logger = setup_logger()
-
-# 注册路由
-app.include_router(search_router, prefix="/api/search", tags=["搜索"])
-app.include_router(paper_router, prefix="/api/paper", tags=["论文"])
-app.include_router(qa_router, prefix="/api/qa", tags=["问答"])
-app.include_router(knowledge_base_router, prefix="/api/knowledge-base", tags=["知识库"])
-
 @app.get("/")
 async def root():
     """根路径，返回API信息"""
@@ -56,15 +41,60 @@ async def root():
         "status": "running"
     }
 
-@app.get("/health")
+@app.get("/api/health")
 async def health_check():
     """健康检查接口"""
     return {"status": "healthy", "message": "服务运行正常"}
 
+@app.get("/api/search")
+async def search_papers(q: str = "", limit: int = 10):
+    """搜索论文接口"""
+    return {
+        "query": q,
+        "limit": limit,
+        "results": [
+            {
+                "id": "2401.12345",
+                "title": "深度学习在自然语言处理中的应用",
+                "authors": ["张三", "李四"],
+                "abstract": "本文探讨了深度学习技术在自然语言处理领域的应用...",
+                "published": "2024-01-15",
+                "categories": ["cs.CL", "cs.AI"]
+            }
+        ],
+        "total": 1
+    }
+
+@app.get("/api/paper/{paper_id}")
+async def get_paper(paper_id: str):
+    """获取论文详情"""
+    return {
+        "paper_id": paper_id,
+        "title": "深度学习在自然语言处理中的应用",
+        "authors": ["张三", "李四"],
+        "abstract": "本文探讨了深度学习技术在自然语言处理领域的应用...",
+        "published": "2024-01-15",
+        "categories": ["cs.CL", "cs.AI"],
+        "pdf_url": f"https://arxiv.org/pdf/{paper_id}.pdf"
+    }
+
+@app.post("/api/qa")
+async def ask_question(question: str):
+    """智能问答接口"""
+    return {
+        "question": question,
+        "answer": "根据相关研究，这个问题可以从以下几个方面来理解...",
+        "sources": [
+            {
+                "title": "深度学习在自然语言处理中的应用",
+                "url": "https://arxiv.org/abs/2401.12345"
+            }
+        ]
+    }
+
 @app.exception_handler(Exception)
 async def global_exception_handler(request, exc):
     """全局异常处理"""
-    logger.error(f"全局异常: {str(exc)}")
     return JSONResponse(
         status_code=500,
         content={"message": "服务器内部错误", "detail": str(exc)}
@@ -73,10 +103,10 @@ async def global_exception_handler(request, exc):
 if __name__ == "__main__":
     # 获取配置
     host = os.getenv("HOST", "0.0.0.0")
-    port = int(os.getenv("PORT", 8000))
+    port = int(os.getenv("PORT", 8001))
     debug = os.getenv("DEBUG", "False").lower() == "true"
     
-    logger.info(f"启动服务器: {host}:{port}")
+    print(f"启动服务器: {host}:{port}")
     
     # 启动服务器
     uvicorn.run(
