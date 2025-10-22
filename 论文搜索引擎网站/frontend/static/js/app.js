@@ -297,7 +297,7 @@ class PaperSearchApp {
                 year_to: document.getElementById('yearTo').value || null
             };
             
-            const response = await this.apiRequest('/search/', 'POST', searchParams);
+            const response = await this.apiRequest('/search', 'POST', searchParams);
             
             if (response.papers) {
                 this.searchResults = response.papers;
@@ -330,7 +330,7 @@ class PaperSearchApp {
         const loadingId = this.addChatMessage('正在思考中...', 'assistant', true);
         
         try {
-            const response = await this.apiRequest('/qa/', 'POST', {
+            const response = await this.apiRequest('/qa', 'POST', {
                 question: question,
                 context_limit: 5,
                 include_sources: true

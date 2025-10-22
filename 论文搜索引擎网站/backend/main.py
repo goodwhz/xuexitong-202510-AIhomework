@@ -47,6 +47,7 @@ async def health_check():
     return {"status": "healthy", "message": "服务运行正常"}
 
 @app.get("/api/search")
+@app.post("/api/search")
 async def search_papers(q: str = "", limit: int = 10):
     """搜索论文接口"""
     return {
@@ -90,6 +91,20 @@ async def ask_question(question: str):
                 "url": "https://arxiv.org/abs/2401.12345"
             }
         ]
+    }
+
+@app.get("/api/search/suggestions")
+async def get_search_suggestions(q: str = ""):
+    """搜索建议接口"""
+    return {
+        "suggestions": ["机器学习", "深度学习", "自然语言处理", "计算机视觉"]
+    }
+
+@app.get("/api/search/trending")
+async def get_trending_topics():
+    """热门话题接口"""
+    return {
+        "topics": ["人工智能", "大语言模型", "强化学习", "联邦学习"]
     }
 
 @app.exception_handler(Exception)
