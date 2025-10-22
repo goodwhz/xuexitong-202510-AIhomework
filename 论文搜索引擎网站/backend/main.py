@@ -1,6 +1,6 @@
 """
 论文搜索引擎后端主程序
-基于FastAPI构建的RESTful API服务
+基于FastAPI构建的RESTful API服务 - Vercel优化版
 """
 
 from fastapi import FastAPI, HTTPException
@@ -9,6 +9,8 @@ from fastapi.responses import JSONResponse
 import uvicorn
 import os
 from dotenv import load_dotenv
+import requests
+import json
 
 # 加载环境变量
 load_dotenv()
