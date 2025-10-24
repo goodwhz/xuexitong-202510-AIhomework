@@ -4,12 +4,18 @@ def handler(request):
     # Vercel Python函数的标准格式
     path = request.get('path', '/')
     
-    if path == '/api/health':
+    # 处理根路径
+    if path == '/':
+        response = {"message": "论文搜索引擎API", "status": "running"}
+        status_code = 200
+    # 处理健康检查
+    elif path == '/api/health':
         response = {"status": "healthy", "message": "服务运行正常"}
         status_code = 200
+    # 处理搜索请求
     elif path.startswith('/api/search'):
         # 解析查询参数
-        query_string = request.get('queryStringParameters', {})
+        query_string = request.get('queryStringParameters', {}) or {}
         q = query_string.get('q', '')
         
         response = {
@@ -27,9 +33,10 @@ def handler(request):
             "total": 1
         }
         status_code = 200
+    # 处理未知路径
     else:
-        response = {"message": "论文搜索引擎API", "status": "running"}
-        status_code = 200
+        response = {"error": "Not Found", "message": "路径不存在"}
+        status_code = 404
     
     return {
         'statusCode': status_code,
@@ -39,5 +46,5 @@ def handler(request):
             'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
             'Access-Control-Allow-Headers': 'Content-Type'
         },
-        'body': json.dumps(response)
+        'body': json.dumps(response, ensure_ascii=False)
     }
